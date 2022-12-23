@@ -7,12 +7,41 @@
       (conj n-s
             (apply f (reverse args))))))
 
-(def plus (stk-fn + 2))
-(def minus (stk-fn - 2))
-(def mult (stk-fn * 2))
-(def div (stk-fn / 2))
-(def pow (stk-fn (fn [x y] (Math/pow x y)) 2))
+(defn rank [x]
+  (cond
+    (seqable? x) (+ 1 (rank (first x)))
+    :else 0))
 
+(defn stk-replicate [x n]
+  (for [_ (range n)]
+    x))
+
+(defn stk-apply [f x y]
+  (if (and (seqable? x) (seqable? y))
+    (if (= (count x) (count y))
+      (map f x y)
+      (throw (IllegalArgumentException. "Counts do not match")))
+    (f x y)))
+
+(defn rank-polymorphic [f]
+  (fn [x y]
+    (let [r1 (rank x)
+          r2 (rank y)]
+      (if (= r1 r2)
+        (stk-apply f x y)
+        (let [mx (max r1 r2)
+              mn (min r1 r2)]
+          (if (and (= mx 1) (= mn 0))
+            (stk-apply f
+                       (if (seqable? x) x (stk-replicate x (count y)))
+                       (if (seqable? y) y (stk-replicate y (count x))))
+            (throw (IllegalArgumentException. "Ranks do not match"))))))))
+
+(def plus (stk-fn (rank-polymorphic +) 2))
+(def minus (stk-fn (rank-polymorphic -) 2))
+(def mult (stk-fn (rank-polymorphic *) 2))
+(def div (stk-fn (rank-polymorphic /) 2))
+(def pow (stk-fn (rank-polymorphic (fn [x y] (Math/pow x y))) 2))
 
 (defn dup [s]
   (let [x (take 1 s)
