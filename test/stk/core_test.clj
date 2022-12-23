@@ -17,4 +17,11 @@
     (is (= (apply vector (stk-eval [2 3 swap] '() {})) [2 3])))
 
   (testing "Test rotate"
-    (is (= (apply vector (stk-eval [2 3 4 rot] '() {})) [3 2 4]))))
+    (is (= (apply vector (stk-eval [2 3 4 rot] '() {})) [3 2 4])))
+
+  (testing "Test variable"
+    (is (= (apply
+             vector
+             (stk-eval [{:square [dup mult] :a [43] :b [3]}
+                        :a :b minus :square] '() {}))
+           [1600]))))
