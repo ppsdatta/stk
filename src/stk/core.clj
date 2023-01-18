@@ -55,6 +55,8 @@
 (def mult (stk-fn (rank-polymorphic *) 2))
 (def div (stk-fn (rank-polymorphic /) 2))
 (def pow (stk-fn (rank-polymorphic (fn [x y] (Math/pow x y))) 2))
+(def modulo (stk-fn (rank-polymorphic rem) 2))
+(def iota (stk-fn (fn [n] (apply vector (range n))) 1))
 
 (defn dup [s]
   (let [x (take 1 s)
