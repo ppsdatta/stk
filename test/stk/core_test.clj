@@ -165,4 +165,10 @@
     (is (thrown? IllegalArgumentException
                  (stk-eval [[1 2 3] [2 3 4 5 6] pow]
                            '()
-                           {})))))
+                           {}))))
+  (testing "Testing rank 0 with rank N operation (broadcasting)"
+    (is (= (first
+             (stk-eval [2 [[3 4 5] [4 5 6]] plus 3 mult]
+                       '()
+                       {}))
+           [[15 18 21] [18 21 24]]))))

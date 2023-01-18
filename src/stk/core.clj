@@ -12,6 +12,19 @@
     (seqable? x) (+ 1 (rank (first x)))
     :else 0))
 
+(defn dim2 [x]
+  (if (seqable? x)
+    (cons (count x) (dim2 (first x)))
+    (list 0)))
+
+(defn dim [x]
+  (butlast (dim2 x)))
+
+(defn broadcast [f x]
+  (if (seqable? x)
+    (map (fn [e] (broadcast f e)) x)
+    (f x)))
+
 (defn stk-replicate [x n]
   (for [_ (range n)]
     x))
@@ -31,10 +44,10 @@
         (stk-apply f x y)
         (let [mx (max r1 r2)
               mn (min r1 r2)]
-          (if (and (= mx 1) (= mn 0))
-            (stk-apply f
-                       (if (seqable? x) x (stk-replicate x (count y)))
-                       (if (seqable? y) y (stk-replicate y (count x))))
+          (if (and (> mx 0) (= mn 0))
+            (if (= r1 0)
+              (broadcast (fn [e] (f x e)) y)
+              (broadcast (fn [e] (f e y)) x))
             (throw (IllegalArgumentException. "Ranks do not match"))))))))
 
 (def plus (stk-fn (rank-polymorphic +) 2))
