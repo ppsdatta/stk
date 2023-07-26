@@ -4,6 +4,12 @@ A Clojure library that enables you to code like it is Forth
 
 ## Usage
 
+In Forth everything is evaluated on a global Stack. What if we had the same ability in Clojure - not a separate language but within Clojure as a library.
+
+Example:
+```[clojure]
+[{:double [dup plus]} 1 2 2 plus :double :double mult dup minus .]
+```
 
 
 ## License
