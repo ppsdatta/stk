@@ -1,10 +1,10 @@
 # stk
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library that enables you to code like it is Forth
 
 ## Usage
 
-FIXME
+
 
 ## License
 
